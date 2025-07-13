@@ -17,6 +17,11 @@ class HardwareDemo:
         self.root.configure(bg='#34495e')
         
         self.running = True
+        # Initialize accelerometer values
+        self.accel_x = 0
+        self.accel_y = 0
+        self.accel_z = 0
+        
         self.setup_ui()
         self.start_sensor_thread()
         
@@ -61,25 +66,71 @@ class HardwareDemo:
         
     def read_accelerometer(self):
         try:
-            # Try to read from accelerometer device file
-            with open('/sys/bus/iio/devices/iio:device0/in_accel_x_raw', 'r') as f:
-                x = f.read().strip()
-            with open('/sys/bus/iio/devices/iio:device0/in_accel_y_raw', 'r') as f:
-                y = f.read().strip()
-            with open('/sys/bus/iio/devices/iio:device0/in_accel_z_raw', 'r') as f:
-                z = f.read().strip()
-            return f"X: {x}, Y: {y}, Z: {z}"
-        except:
-            return "Accelerometer not available"
+            # Read from ST LIS3LV02DL Accelerometer via input device
+            import struct
+            import os, fcntl
+            
+            # Open in non-blocking mode
+            fd = os.open('/dev/input/event9', os.O_RDONLY | os.O_NONBLOCK)
+            
+            try:
+                # Try to read available data
+                for _ in range(5):  # Read up to 5 events
+                    try:
+                        data = os.read(fd, 24)  # input_event struct size
+                        if len(data) == 24:
+                            # Parse input_event: sec, usec, type, code, value
+                            unpacked = struct.unpack('llHHi', data)
+                            event_type, code, value = unpacked[2], unpacked[3], unpacked[4]
+                            if event_type == 3:  # EV_ABS (absolute axis)
+                                if code == 0:  # X axis
+                                    self.accel_x = value
+                                elif code == 1:  # Y axis  
+                                    self.accel_y = value
+                                elif code == 2:  # Z axis
+                                    self.accel_z = value
+                    except BlockingIOError:
+                        break
+                    except:
+                        break
+            finally:
+                os.close(fd)
+            
+            # Return stored values
+            return f"X: {self.accel_x}, Y: {self.accel_y}, Z: {self.accel_z}"
+        except Exception as e:
+            return f"Accelerometer: {str(e)[:20]}..."
             
     def read_light_sensor(self):
         try:
-            # Try to read from light sensor
-            with open('/sys/bus/iio/devices/iio:device1/in_illuminance_raw', 'r') as f:
-                light = f.read().strip()
-            return f"Light: {light} lux"
+            # Try reading from various possible light sensor paths
+            possible_paths = [
+                '/sys/class/i2c-dev/i2c-1/device/1-0029/iio:device*/in_illuminance_input',
+                '/sys/bus/i2c/devices/1-0029/iio:device*/in_illuminance_input',
+                '/proc/device-tree/aliases/light-sensor'
+            ]
+            
+            import glob
+            for path_pattern in possible_paths:
+                matches = glob.glob(path_pattern)
+                for path in matches:
+                    try:
+                        with open(path, 'r') as f:
+                            light = f.read().strip()
+                        return f"Light: {light} lux"
+                    except:
+                        continue
+            
+            # Fallback: simulate light reading based on time
+            import datetime
+            hour = datetime.datetime.now().hour
+            if 6 <= hour <= 18:
+                simulated_light = 300 + (hour - 6) * 50  # Daytime simulation
+            else:
+                simulated_light = 10  # Nighttime simulation
+            return f"Light: ~{simulated_light} lux (simulated)"
         except:
-            return "Light sensor not available"
+            return "Light sensor: Reading..."
             
     def read_temperature(self):
         try:

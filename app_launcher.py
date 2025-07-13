@@ -26,15 +26,15 @@ class AppLauncher:
     def setup_ui(self):
         # Title
         title = tk.Label(self.root, text="reTerminal Apps", 
-                        font=('Arial', 32, 'bold'), 
+                        font=('Arial', 42, 'bold'), 
                         fg='#ecf0f1', bg='#2c3e50')
-        title.pack(pady=30)
+        title.pack(pady=40)
         
         # Subtitle
         subtitle = tk.Label(self.root, text="Choose an application to launch", 
-                           font=('Arial', 16), 
+                           font=('Arial', 20), 
                            fg='#bdc3c7', bg='#2c3e50')
-        subtitle.pack(pady=10)
+        subtitle.pack(pady=15)
         
         # App buttons frame
         button_frame = tk.Frame(self.root, bg='#2c3e50')
@@ -50,11 +50,11 @@ class AppLauncher:
         for name, filename, color in apps:
             button = tk.Button(button_frame, 
                               text=name, 
-                              font=('Arial', 18, 'bold'),
+                              font=('Arial', 20, 'bold'),
                               bg=color, fg='white',
-                              width=20, height=3,
+                              width=22, height=4,
                               command=lambda f=filename: self.launch_app(f))
-            button.pack(pady=15)
+            button.pack(pady=25)
             
         # Separator
         separator = tk.Frame(self.root, height=2, bg='#34495e')
@@ -62,32 +62,32 @@ class AppLauncher:
         
         # System buttons
         system_frame = tk.Frame(self.root, bg='#2c3e50')
-        system_frame.pack(pady=20)
+        system_frame.pack(pady=40)
         
         # Terminal button
         terminal_btn = tk.Button(system_frame, 
                                 text="Open Terminal", 
-                                font=('Arial', 14),
+                                font=('Arial', 18, 'bold'),
                                 bg='#95a5a6', fg='white',
-                                width=15, height=2,
+                                width=18, height=3,
                                 command=self.open_terminal)
-        terminal_btn.pack(side=tk.LEFT, padx=10)
+        terminal_btn.pack(side=tk.LEFT, padx=20)
         
         # File manager button
         files_btn = tk.Button(system_frame, 
                              text="File Manager", 
-                             font=('Arial', 14),
+                             font=('Arial', 18, 'bold'),
                              bg='#f39c12', fg='white',
-                             width=15, height=2,
+                             width=18, height=3,
                              command=self.open_file_manager)
-        files_btn.pack(side=tk.LEFT, padx=10)
+        files_btn.pack(side=tk.LEFT, padx=20)
         
         # Exit button
         exit_button = tk.Button(self.root, 
                                text="Exit Launcher", 
-                               font=('Arial', 14),
+                               font=('Arial', 18, 'bold'),
                                bg='#e74c3c', fg='white',
-                               width=15, height=1,
+                               width=20, height=2,
                                command=self.exit_app)
         exit_button.pack(side=tk.BOTTOM, pady=30)
         

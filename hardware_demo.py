@@ -39,9 +39,9 @@ class HardwareDemo:
     def setup_ui(self):
         # Title
         title = tk.Label(self.root, text="Hardware Sensors", 
-                        font=('Arial', 24, 'bold'), 
+                        font=('Arial', 36, 'bold'), 
                         fg='white', bg='#34495e')
-        title.pack(pady=20)
+        title.pack(pady=40)
         
         # Create frames for different sensors
         self.create_sensor_frame("Accelerometer", "accel")
@@ -51,26 +51,26 @@ class HardwareDemo:
         # Exit button
         exit_button = tk.Button(self.root, 
                                text="Exit", 
-                               font=('Arial', 14),
+                               font=('Arial', 18, 'bold'),
                                bg='#e74c3c', fg='white',
-                               width=10, height=1,
+                               width=15, height=2,
                                command=self.close_app)
-        exit_button.pack(side=tk.BOTTOM, pady=20)
+        exit_button.pack(side=tk.BOTTOM, pady=30)
         
     def create_sensor_frame(self, title, sensor_type):
         frame = tk.Frame(self.root, bg='#2c3e50', relief='raised', bd=2)
-        frame.pack(pady=10, padx=20, fill='x')
+        frame.pack(pady=20, padx=30, fill='x')
         
         # Sensor title
         tk.Label(frame, text=title, 
-                font=('Arial', 16, 'bold'),
-                fg='white', bg='#2c3e50').pack(pady=5)
+                font=('Arial', 20, 'bold'),
+                fg='white', bg='#2c3e50').pack(pady=10)
         
         # Sensor value
         value_label = tk.Label(frame, text="Reading...", 
-                              font=('Arial', 14),
+                              font=('Arial', 16),
                               fg='#ecf0f1', bg='#2c3e50')
-        value_label.pack(pady=5)
+        value_label.pack(pady=10)
         
         # Store reference for updates
         setattr(self, f"{sensor_type}_label", value_label)

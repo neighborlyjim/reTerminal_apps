@@ -24,49 +24,49 @@ class TouchscreenDemo:
     def setup_ui(self):
         # Title
         title = tk.Label(self.root, text="reTerminal Demo", 
-                        font=('Arial', 24, 'bold'), 
+                        font=('Arial', 36, 'bold'), 
                         fg='white', bg='#2c3e50')
-        title.pack(pady=20)
+        title.pack(pady=40)
         
         # Touch counter
         self.touch_count = 0
         self.counter_label = tk.Label(self.root, 
                                      text=f"Touch Count: {self.touch_count}",
-                                     font=('Arial', 18),
+                                     font=('Arial', 24),
                                      fg='white', bg='#2c3e50')
-        self.counter_label.pack(pady=10)
+        self.counter_label.pack(pady=20)
         
         # Large touch button
         self.touch_button = tk.Button(self.root, 
                                      text="Touch Me!", 
-                                     font=('Arial', 20, 'bold'),
+                                     font=('Arial', 28, 'bold'),
                                      bg='#3498db', fg='white',
-                                     width=15, height=3,
+                                     width=20, height=6,
                                      command=self.on_touch)
-        self.touch_button.pack(pady=30)
+        self.touch_button.pack(pady=50)
         
         # Color change button
         color_button = tk.Button(self.root, 
                                 text="Change Color", 
-                                font=('Arial', 16),
+                                font=('Arial', 20, 'bold'),
                                 bg='#e74c3c', fg='white',
-                                width=15, height=2,
+                                width=18, height=3,
                                 command=self.change_color)
-        color_button.pack(pady=20)
+        color_button.pack(pady=30)
         
         # Status display
         self.status_label = tk.Label(self.root, 
                                     text="Ready for touch input",
-                                    font=('Arial', 14),
+                                    font=('Arial', 18),
                                     fg='#ecf0f1', bg='#2c3e50')
-        self.status_label.pack(pady=20)
+        self.status_label.pack(pady=30)
         
         # Exit button
         exit_button = tk.Button(self.root, 
                                text="Exit", 
-                               font=('Arial', 14),
+                               font=('Arial', 18, 'bold'),
                                bg='#95a5a6', fg='white',
-                               width=10, height=1,
+                               width=15, height=2,
                                command=self.exit_app)
         exit_button.pack(side=tk.BOTTOM, pady=20)
         

@@ -29,9 +29,9 @@ class IoTDashboard:
     def setup_ui(self):
         # Main title
         title = tk.Label(self.root, text="IoT Dashboard", 
-                        font=('Arial', 28, 'bold'), 
+                        font=('Arial', 36, 'bold'), 
                         fg='#00d4aa', bg='#1a252f')
-        title.pack(pady=10)
+        title.pack(pady=30)
         
         # System info frame
         self.create_info_frame()
@@ -45,43 +45,43 @@ class IoTDashboard:
         # Exit button
         exit_button = tk.Button(self.root, 
                                text="Exit Dashboard", 
-                               font=('Arial', 14),
+                               font=('Arial', 18, 'bold'),
                                bg='#ff6b6b', fg='white',
-                               width=15, height=1,
+                               width=18, height=2,
                                command=self.close_app)
         exit_button.pack(side=tk.BOTTOM, pady=10)
         
     def create_info_frame(self):
         frame = tk.LabelFrame(self.root, text="System Information", 
-                             font=('Arial', 14, 'bold'),
+                             font=('Arial', 18, 'bold'),
                              fg='#00d4aa', bg='#1a252f', 
                              labelanchor='n')
-        frame.pack(pady=10, padx=20, fill='x')
+        frame.pack(pady=15, padx=30, fill='x')
         
         # Hostname
         self.hostname_label = tk.Label(frame, text="Hostname: Loading...", 
-                                      font=('Arial', 12),
+                                      font=('Arial', 16),
                                       fg='white', bg='#1a252f')
-        self.hostname_label.pack(anchor='w', padx=10, pady=2)
+        self.hostname_label.pack(anchor='w', padx=15, pady=5)
         
         # Uptime
         self.uptime_label = tk.Label(frame, text="Uptime: Loading...", 
-                                    font=('Arial', 12),
+                                    font=('Arial', 16),
                                     fg='white', bg='#1a252f')
-        self.uptime_label.pack(anchor='w', padx=10, pady=2)
+        self.uptime_label.pack(anchor='w', padx=15, pady=5)
         
         # Current time
         self.time_label = tk.Label(frame, text="Time: Loading...", 
-                                  font=('Arial', 12),
+                                  font=('Arial', 16),
                                   fg='white', bg='#1a252f')
-        self.time_label.pack(anchor='w', padx=10, pady=2)
+        self.time_label.pack(anchor='w', padx=15, pady=5)
         
     def create_network_frame(self):
         frame = tk.LabelFrame(self.root, text="Network Status", 
-                             font=('Arial', 14, 'bold'),
+                             font=('Arial', 18, 'bold'),
                              fg='#00d4aa', bg='#1a252f',
                              labelanchor='n')
-        frame.pack(pady=10, padx=20, fill='x')
+        frame.pack(pady=15, padx=30, fill='x')
         
         # IP Address
         self.ip_label = tk.Label(frame, text="IP Address: Loading...", 
@@ -97,26 +97,26 @@ class IoTDashboard:
         
     def create_resource_frame(self):
         frame = tk.LabelFrame(self.root, text="Resource Usage", 
-                             font=('Arial', 14, 'bold'),
+                             font=('Arial', 18, 'bold'),
                              fg='#00d4aa', bg='#1a252f',
                              labelanchor='n')
-        frame.pack(pady=10, padx=20, fill='x')
+        frame.pack(pady=15, padx=30, fill='x')
         
         # CPU Usage
         self.cpu_label = tk.Label(frame, text="CPU: Loading...", 
-                                 font=('Arial', 12),
+                                 font=('Arial', 16),
                                  fg='white', bg='#1a252f')
-        self.cpu_label.pack(anchor='w', padx=10, pady=2)
+        self.cpu_label.pack(anchor='w', padx=15, pady=5)
         
         # Memory Usage
         self.memory_label = tk.Label(frame, text="Memory: Loading...", 
-                                    font=('Arial', 12),
+                                    font=('Arial', 16),
                                     fg='white', bg='#1a252f')
-        self.memory_label.pack(anchor='w', padx=10, pady=2)
+        self.memory_label.pack(anchor='w', padx=15, pady=5)
         
         # Disk Usage
         self.disk_label = tk.Label(frame, text="Disk: Loading...", 
-                                  font=('Arial', 12),
+                                  font=('Arial', 16),
                                   fg='white', bg='#1a252f')
         self.disk_label.pack(anchor='w', padx=10, pady=2)
         

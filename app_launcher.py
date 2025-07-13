@@ -13,9 +13,13 @@ class AppLauncher:
     def __init__(self, root):
         self.root = root
         self.root.title("reTerminal App Launcher")
-        # Enable fullscreen mode
+        # Set explicit geometry for fullscreen
+        self.root.geometry("1280x720")  # reTerminal screen size
         self.root.attributes('-fullscreen', True)
         self.root.configure(bg='#2c3e50')
+        
+        # Remove window decorations
+        self.root.overrideredirect(True)
         
         # Bind escape key to exit fullscreen
         self.root.bind('<Escape>', self.toggle_fullscreen)
@@ -38,7 +42,7 @@ class AppLauncher:
         
         # App buttons frame
         button_frame = tk.Frame(self.root, bg='#2c3e50')
-        button_frame.pack(pady=40, expand=True)
+        button_frame.pack(pady=20, expand=True)
         
         # Define apps
         apps = [
@@ -47,40 +51,47 @@ class AppLauncher:
             ("IoT Dashboard", "iot_dashboard.py", "#2ecc71"),
         ]
         
-        for name, filename, color in apps:
-            button = tk.Button(button_frame, 
+        # Adjust button layout to two columns
+        left_column = tk.Frame(button_frame, bg='#2c3e50')
+        left_column.pack(side=tk.LEFT, padx=20)
+        right_column = tk.Frame(button_frame, bg='#2c3e50')
+        right_column.pack(side=tk.LEFT, padx=20)
+
+        for i, (name, filename, color) in enumerate(apps):
+            column = left_column if i % 2 == 0 else right_column
+            button = tk.Button(column, 
                               text=name, 
-                              font=('Arial', 20, 'bold'),
+                              font=('Arial', 18, 'bold'),
                               bg=color, fg='white',
-                              width=22, height=4,
+                              width=20, height=3,
                               command=lambda f=filename: self.launch_app(f))
-            button.pack(pady=25)
+            button.pack(pady=15)
+
+        # Add File Manager button to the second column
+        files_btn = tk.Button(right_column, 
+                             text="File Manager", 
+                             font=('Arial', 16, 'bold'),
+                             bg='#f39c12', fg='white',
+                             width=20, height=3,
+                             command=self.open_file_manager)
+        files_btn.pack(pady=15)
             
         # Separator
         separator = tk.Frame(self.root, height=2, bg='#34495e')
-        separator.pack(fill='x', padx=50, pady=20)
+        separator.pack(fill='x', padx=50, pady=10)
         
         # System buttons
         system_frame = tk.Frame(self.root, bg='#2c3e50')
-        system_frame.pack(pady=40)
+        system_frame.pack(pady=20)
         
         # Terminal button
         terminal_btn = tk.Button(system_frame, 
                                 text="Open Terminal", 
-                                font=('Arial', 18, 'bold'),
+                                font=('Arial', 16, 'bold'),
                                 bg='#95a5a6', fg='white',
-                                width=18, height=3,
+                                width=20, height=3,
                                 command=self.open_terminal)
-        terminal_btn.pack(side=tk.LEFT, padx=20)
-        
-        # File manager button
-        files_btn = tk.Button(system_frame, 
-                             text="File Manager", 
-                             font=('Arial', 18, 'bold'),
-                             bg='#f39c12', fg='white',
-                             width=18, height=3,
-                             command=self.open_file_manager)
-        files_btn.pack(side=tk.LEFT, padx=20)
+        terminal_btn.pack(side=tk.LEFT, padx=10)
         
         # Exit button
         exit_button = tk.Button(self.root, 
@@ -89,7 +100,7 @@ class AppLauncher:
                                bg='#e74c3c', fg='white',
                                width=20, height=2,
                                command=self.exit_app)
-        exit_button.pack(side=tk.BOTTOM, pady=30)
+        exit_button.pack(side=tk.BOTTOM, pady=20)
         
     def launch_app(self, filename):
         app_path = os.path.join(self.app_dir, filename)
@@ -121,13 +132,17 @@ class AppLauncher:
                 
     def toggle_fullscreen(self, event=None):
         """Toggle fullscreen mode (Escape key)"""
-        current_state = self.root.attributes('-fullscreen')
-        self.root.attributes('-fullscreen', not current_state)
+        # Toggle overrideredirect to show/hide window decorations
+        current_override = self.root.overrideredirect()
+        self.root.overrideredirect(not current_override)
+        if not current_override:
+            self.root.geometry("1280x720")
         
     def exit_app(self):
         """Exit the application"""
         self.root.quit()
         self.root.destroy()
+        os.system("pkill -f python3")
 
 if __name__ == "__main__":
     root = tk.Tk()

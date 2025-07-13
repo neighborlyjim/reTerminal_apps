@@ -15,14 +15,19 @@ import tkinter as tk
 from tkinter import ttk
 import time
 import threading
+import subprocess
 
 class HardwareDemo:
     def __init__(self, root):
         self.root = root
         self.root.title("reTerminal Hardware Demo")
-        # Enable fullscreen mode
+        # Set explicit geometry for fullscreen
+        self.root.geometry("1280x720")  # reTerminal screen size
         self.root.attributes('-fullscreen', True)
         self.root.configure(bg='#34495e')
+        
+        # Remove window decorations
+        self.root.overrideredirect(True)
         
         # Bind escape key to exit fullscreen
         self.root.bind('<Escape>', self.toggle_fullscreen)
@@ -56,6 +61,15 @@ class HardwareDemo:
                                width=15, height=2,
                                command=self.close_app)
         exit_button.pack(side=tk.BOTTOM, pady=30)
+        
+        # Add back button
+        back_button = tk.Button(self.root, 
+                               text="Back to Launcher", 
+                               font=('Arial', 18, 'bold'),
+                               bg='#3498db', fg='white',
+                               width=18, height=2,
+                               command=self.back_to_launcher)
+        back_button.pack(side=tk.BOTTOM, pady=30)
         
     def create_sensor_frame(self, title, sensor_type):
         frame = tk.Frame(self.root, bg='#2c3e50', relief='raised', bd=2)
@@ -184,13 +198,22 @@ class HardwareDemo:
         
     def toggle_fullscreen(self, event=None):
         """Toggle fullscreen mode (Escape key)"""
-        current_state = self.root.attributes('-fullscreen')
-        self.root.attributes('-fullscreen', not current_state)
+        # Toggle overrideredirect to show/hide window decorations
+        current_override = self.root.overrideredirect()
+        self.root.overrideredirect(not current_override)
+        if not current_override:
+            self.root.geometry("1280x720")
         
     def close_app(self):
         self.running = False
         self.root.quit()
         self.root.destroy()
+        
+    def back_to_launcher(self):
+        self.running = False
+        self.root.quit()
+        self.root.destroy()
+        subprocess.Popen(['python3', 'app_launcher.py'])
 
 if __name__ == "__main__":
     root = tk.Tk()

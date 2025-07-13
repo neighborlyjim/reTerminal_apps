@@ -15,9 +15,13 @@ class IoTDashboard:
     def __init__(self, root):
         self.root = root
         self.root.title("reTerminal IoT Dashboard")
-        # Enable fullscreen mode
+        # Set explicit geometry for fullscreen
+        self.root.geometry("1280x720")  # reTerminal screen size
         self.root.attributes('-fullscreen', True)
         self.root.configure(bg='#1a252f')
+        
+        # Remove window decorations
+        self.root.overrideredirect(True)
         
         # Bind escape key to exit fullscreen
         self.root.bind('<Escape>', self.toggle_fullscreen)
@@ -49,7 +53,16 @@ class IoTDashboard:
                                bg='#ff6b6b', fg='white',
                                width=18, height=2,
                                command=self.close_app)
-        exit_button.pack(side=tk.BOTTOM, pady=10)
+        exit_button.pack(side=tk.BOTTOM, pady=30)
+        
+        # Add back button
+        back_button = tk.Button(self.root, 
+                               text="Back to Launcher", 
+                               font=('Arial', 18, 'bold'),
+                               bg='#3498db', fg='white',
+                               width=18, height=2,
+                               command=self.back_to_launcher)
+        back_button.pack(side=tk.BOTTOM, pady=30)
         
     def create_info_frame(self):
         frame = tk.LabelFrame(self.root, text="System Information", 
@@ -217,13 +230,22 @@ class IoTDashboard:
         
     def toggle_fullscreen(self, event=None):
         """Toggle fullscreen mode (Escape key)"""
-        current_state = self.root.attributes('-fullscreen')
-        self.root.attributes('-fullscreen', not current_state)
+        # Toggle overrideredirect to show/hide window decorations
+        current_override = self.root.overrideredirect()
+        self.root.overrideredirect(not current_override)
+        if not current_override:
+            self.root.geometry("1280x720")
         
     def close_app(self):
         self.running = False
         self.root.quit()
         self.root.destroy()
+        
+    def back_to_launcher(self):
+        self.running = False
+        self.root.quit()
+        self.root.destroy()
+        subprocess.Popen(['python3', 'app_launcher.py'])
 
 if __name__ == "__main__":
     root = tk.Tk()

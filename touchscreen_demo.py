@@ -12,11 +12,12 @@ class TouchscreenDemo:
     def __init__(self, root):
         self.root = root
         self.root.title("reTerminal Touchscreen Demo")
-        self.root.geometry("720x1280")  # reTerminal screen size
+        # Enable fullscreen mode
+        self.root.attributes('-fullscreen', True)
         self.root.configure(bg='#2c3e50')
         
-        # Make it fullscreen for kiosk mode
-        # self.root.attributes('-fullscreen', True)
+        # Bind escape key to exit fullscreen
+        self.root.bind('<Escape>', self.toggle_fullscreen)
         
         self.setup_ui()
         
@@ -66,7 +67,7 @@ class TouchscreenDemo:
                                font=('Arial', 14),
                                bg='#95a5a6', fg='white',
                                width=10, height=1,
-                               command=self.root.quit)
+                               command=self.exit_app)
         exit_button.pack(side=tk.BOTTOM, pady=20)
         
     def on_touch(self):
@@ -85,6 +86,16 @@ class TouchscreenDemo:
         self.root.config(bg=new_color)
         self.counter_label.config(bg=new_color)
         self.status_label.config(bg=new_color)
+        
+    def toggle_fullscreen(self, event=None):
+        """Toggle fullscreen mode (Escape key)"""
+        current_state = self.root.attributes('-fullscreen')
+        self.root.attributes('-fullscreen', not current_state)
+        
+    def exit_app(self):
+        """Exit the application"""
+        self.root.quit()
+        self.root.destroy()
         
 if __name__ == "__main__":
     root = tk.Tk()

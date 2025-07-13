@@ -15,8 +15,12 @@ class IoTDashboard:
     def __init__(self, root):
         self.root = root
         self.root.title("reTerminal IoT Dashboard")
-        self.root.geometry("720x1280")
+        # Enable fullscreen mode
+        self.root.attributes('-fullscreen', True)
         self.root.configure(bg='#1a252f')
+        
+        # Bind escape key to exit fullscreen
+        self.root.bind('<Escape>', self.toggle_fullscreen)
         
         self.running = True
         self.setup_ui()
@@ -211,9 +215,15 @@ class IoTDashboard:
         self.update_thread = threading.Thread(target=self.update_dashboard, daemon=True)
         self.update_thread.start()
         
+    def toggle_fullscreen(self, event=None):
+        """Toggle fullscreen mode (Escape key)"""
+        current_state = self.root.attributes('-fullscreen')
+        self.root.attributes('-fullscreen', not current_state)
+        
     def close_app(self):
         self.running = False
         self.root.quit()
+        self.root.destroy()
 
 if __name__ == "__main__":
     root = tk.Tk()

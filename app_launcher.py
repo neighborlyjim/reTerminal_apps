@@ -13,8 +13,12 @@ class AppLauncher:
     def __init__(self, root):
         self.root = root
         self.root.title("reTerminal App Launcher")
-        self.root.geometry("720x1280")
+        # Enable fullscreen mode
+        self.root.attributes('-fullscreen', True)
         self.root.configure(bg='#2c3e50')
+        
+        # Bind escape key to exit fullscreen
+        self.root.bind('<Escape>', self.toggle_fullscreen)
         
         self.app_dir = "/home/jharris/reTerminal_apps"
         self.setup_ui()
@@ -84,7 +88,7 @@ class AppLauncher:
                                font=('Arial', 14),
                                bg='#e74c3c', fg='white',
                                width=15, height=1,
-                               command=self.root.quit)
+                               command=self.exit_app)
         exit_button.pack(side=tk.BOTTOM, pady=30)
         
     def launch_app(self, filename):
@@ -114,6 +118,16 @@ class AppLauncher:
                 subprocess.Popen(['nautilus', self.app_dir])
             except:
                 print("Could not open file manager")
+                
+    def toggle_fullscreen(self, event=None):
+        """Toggle fullscreen mode (Escape key)"""
+        current_state = self.root.attributes('-fullscreen')
+        self.root.attributes('-fullscreen', not current_state)
+        
+    def exit_app(self):
+        """Exit the application"""
+        self.root.quit()
+        self.root.destroy()
 
 if __name__ == "__main__":
     root = tk.Tk()

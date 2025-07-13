@@ -2,6 +2,13 @@
 """
 reTerminal Hardware Demo
 Demonstrates reading from built-in sensors (accelerometer, light sensor, etc.)
+
+Hardware interfaces based on official Seeed documentation:
+https://wiki.seeedstudio.com/reTerminal-hardware-interfaces-usage/
+
+Sensors:
+- Light Sensor (LTR-303ALS-01): /sys/bus/iio/devices/iio:device0/in_illuminance_input
+- Accelerometer (ST LIS3LV02DL): /dev/input/event9 (via input events)
 """
 
 import tkinter as tk
@@ -13,8 +20,12 @@ class HardwareDemo:
     def __init__(self, root):
         self.root = root
         self.root.title("reTerminal Hardware Demo")
-        self.root.geometry("720x1280")
+        # Enable fullscreen mode
+        self.root.attributes('-fullscreen', True)
         self.root.configure(bg='#34495e')
+        
+        # Bind escape key to exit fullscreen
+        self.root.bind('<Escape>', self.toggle_fullscreen)
         
         self.running = True
         # Initialize accelerometer values
@@ -103,34 +114,39 @@ class HardwareDemo:
             
     def read_light_sensor(self):
         try:
-            # Try reading from various possible light sensor paths
-            possible_paths = [
-                '/sys/class/i2c-dev/i2c-1/device/1-0029/iio:device*/in_illuminance_input',
-                '/sys/bus/i2c/devices/1-0029/iio:device*/in_illuminance_input',
-                '/proc/device-tree/aliases/light-sensor'
-            ]
-            
-            import glob
-            for path_pattern in possible_paths:
-                matches = glob.glob(path_pattern)
-                for path in matches:
-                    try:
-                        with open(path, 'r') as f:
-                            light = f.read().strip()
-                        return f"Light: {light} lux"
-                    except:
-                        continue
-            
-            # Fallback: simulate light reading based on time
-            import datetime
-            hour = datetime.datetime.now().hour
-            if 6 <= hour <= 18:
-                simulated_light = 300 + (hour - 6) * 50  # Daytime simulation
-            else:
-                simulated_light = 10  # Nighttime simulation
-            return f"Light: ~{simulated_light} lux (simulated)"
+            # Official path from Seeed documentation
+            with open('/sys/bus/iio/devices/iio:device0/in_illuminance_input', 'r') as f:
+                light = f.read().strip()
+                return f"Light: {light} lux"
         except:
-            return "Light sensor: Reading..."
+            try:
+                # Alternative paths
+                possible_paths = [
+                    '/sys/class/i2c-dev/i2c-1/device/1-0029/iio:device*/in_illuminance_input',
+                    '/sys/bus/i2c/devices/1-0029/iio:device*/in_illuminance_input'
+                ]
+                
+                import glob
+                for path_pattern in possible_paths:
+                    matches = glob.glob(path_pattern)
+                    for path in matches:
+                        try:
+                            with open(path, 'r') as f:
+                                light = f.read().strip()
+                            return f"Light: {light} lux"
+                        except:
+                            continue
+                
+                # Fallback: simulate light reading based on time
+                import datetime
+                hour = datetime.datetime.now().hour
+                if 6 <= hour <= 18:
+                    simulated_light = 300 + (hour - 6) * 50  # Daytime simulation
+                else:
+                    simulated_light = 10  # Nighttime simulation
+                return f"Light: ~{simulated_light} lux (simulated)"
+            except:
+                return "Light sensor: Reading..."
             
     def read_temperature(self):
         try:
@@ -166,9 +182,15 @@ class HardwareDemo:
         self.sensor_thread = threading.Thread(target=self.update_sensors, daemon=True)
         self.sensor_thread.start()
         
+    def toggle_fullscreen(self, event=None):
+        """Toggle fullscreen mode (Escape key)"""
+        current_state = self.root.attributes('-fullscreen')
+        self.root.attributes('-fullscreen', not current_state)
+        
     def close_app(self):
         self.running = False
         self.root.quit()
+        self.root.destroy()
 
 if __name__ == "__main__":
     root = tk.Tk()
